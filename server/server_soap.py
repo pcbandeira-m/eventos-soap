@@ -1,3 +1,4 @@
+from xmlrpc.client import Fault
 from spyne import Application, rpc, ServiceBase, Integer, Unicode, Boolean, Array, ComplexModel
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
@@ -48,6 +49,7 @@ class EventoService(ServiceBase):
         """Percorre a lista pelo ID e atualiza os campos do evento correspondente."""
         for indice, evento in enumerate(lista_eventos):
             if evento.id == id:
+                # Cria o objeto atualizado mantendo o ID original
                 evento_atualizado = Evento(
                     id=id,
                     titulo=titulo,
@@ -60,17 +62,26 @@ class EventoService(ServiceBase):
                 lista_eventos[indice] = evento_atualizado
                 return evento_atualizado
 
-        # Retorna None (tag vazia no XML) caso o ID não seja encontrado na lista
-        return None
+        # Se o loop terminar sem encontrar o ID, dispara uma falha SOAP padronizada (<soap:Fault>).
+        # faultcode="Client" indica que o erro foi causado por um dado inválido enviado pelo cliente.
+        raise Fault(
+            faultcode="Client",
+            faultstring=f"Evento com ID {id} não foi encontrado para atualização."
+        )
 
     @rpc(Integer, _returns=Boolean)
     def DeletarEvento(ctx, id):
-        """Percorre a lista pelo ID e remove o evento correspondente. Retorna True se removido, False se não encontrado."""
+        """Percorre a lista pelo ID e remove o evento correspondente. Dispara <soap:Fault> se o ID não existir."""
         for indice, evento in enumerate(lista_eventos):
             if evento.id == id:
                 lista_eventos.pop(indice)
                 return True
-        return False
+
+        # Se o ID não existir na lista, interrompe a execução e devolve o XML <soap:Fault>
+        raise Fault(
+            faultcode="Client",
+            faultstring=f"Evento com ID {id} não foi encontrado para exclusão."
+        )
 
 # 3. Configuração da Aplicação SOAP e Geração do WSDL
 application = Application(
