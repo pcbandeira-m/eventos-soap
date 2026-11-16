@@ -1,0 +1,182 @@
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:plink="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+  xmlns:wsdlsoap11="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:wsdlsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  xmlns:soap11enc="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:soap11env="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:soap12env="http://www.w3.org/2003/05/soap-envelope"
+  xmlns:soap12enc="http://www.w3.org/2003/05/soap-encoding"
+  xmlns:wsa="http://schemas.xmlsoap.org/ws/2003/03/addressing"
+  xmlns:xop="http://www.w3.org/2004/08/xop/include"
+  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://eventos.soap.exemplo/wsdl"
+  targetNamespace="http://eventos.soap.exemplo/wsdl" name="EventoService">
+  <wsdl:types>
+    <xs:schema targetNamespace="http://eventos.soap.exemplo/wsdl" elementFormDefault="qualified">
+      <xs:complexType name="Evento">
+        <xs:sequence>
+          <xs:element name="id" type="xs:integer" minOccurs="0" nillable="true" />
+          <xs:element name="titulo" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="data" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="local" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="categoria" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="qtdConvidados" type="xs:integer" minOccurs="0" nillable="true" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ListarEventos" />
+      <xs:complexType name="EventoArray">
+        <xs:sequence>
+          <xs:element name="Evento" type="tns:Evento" minOccurs="0" maxOccurs="unbounded"
+            nillable="true" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="AtualizarEvento">
+        <xs:sequence>
+          <xs:element name="id" type="xs:integer" minOccurs="0" nillable="true" />
+          <xs:element name="titulo" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="data" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="local" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="categoria" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="qtdConvidados" type="xs:integer" minOccurs="0" nillable="true" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CriarEvento">
+        <xs:sequence>
+          <xs:element name="titulo" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="data" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="local" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="categoria" type="xs:string" minOccurs="0" nillable="true" />
+          <xs:element name="qtdConvidados" type="xs:integer" minOccurs="0" nillable="true" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DeletarEvento">
+        <xs:sequence>
+          <xs:element name="id" type="xs:integer" minOccurs="0" nillable="true" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DeletarEventoResponse">
+        <xs:sequence>
+          <xs:element name="DeletarEventoResult" type="xs:boolean" minOccurs="0" nillable="true" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="AtualizarEventoResponse">
+        <xs:sequence>
+          <xs:element name="AtualizarEventoResult" type="tns:Evento" minOccurs="0" nillable="true" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CriarEventoResponse">
+        <xs:sequence>
+          <xs:element name="CriarEventoResult" type="tns:Evento" minOccurs="0" nillable="true" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ListarEventosResponse">
+        <xs:sequence>
+          <xs:element name="ListarEventosResult" type="tns:EventoArray" minOccurs="0"
+            nillable="true" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="Evento" type="tns:Evento" />
+      <xs:element name="ListarEventos" type="tns:ListarEventos" />
+      <xs:element name="EventoArray" type="tns:EventoArray" />
+      <xs:element name="AtualizarEvento" type="tns:AtualizarEvento" />
+      <xs:element name="CriarEvento" type="tns:CriarEvento" />
+      <xs:element name="DeletarEvento" type="tns:DeletarEvento" />
+      <xs:element name="DeletarEventoResponse" type="tns:DeletarEventoResponse" />
+      <xs:element name="AtualizarEventoResponse" type="tns:AtualizarEventoResponse" />
+      <xs:element name="CriarEventoResponse" type="tns:CriarEventoResponse" />
+      <xs:element name="ListarEventosResponse" type="tns:ListarEventosResponse" />
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="CriarEvento">
+    <wsdl:part name="CriarEvento" element="tns:CriarEvento" />
+  </wsdl:message>
+  <wsdl:message name="CriarEventoResponse">
+    <wsdl:part name="CriarEventoResponse" element="tns:CriarEventoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ListarEventos">
+    <wsdl:part name="ListarEventos" element="tns:ListarEventos" />
+  </wsdl:message>
+  <wsdl:message name="ListarEventosResponse">
+    <wsdl:part name="ListarEventosResponse" element="tns:ListarEventosResponse" />
+  </wsdl:message>
+  <wsdl:message name="AtualizarEvento">
+    <wsdl:part name="AtualizarEvento" element="tns:AtualizarEvento" />
+  </wsdl:message>
+  <wsdl:message name="AtualizarEventoResponse">
+    <wsdl:part name="AtualizarEventoResponse" element="tns:AtualizarEventoResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeletarEvento">
+    <wsdl:part name="DeletarEvento" element="tns:DeletarEvento" />
+  </wsdl:message>
+  <wsdl:message name="DeletarEventoResponse">
+    <wsdl:part name="DeletarEventoResponse" element="tns:DeletarEventoResponse" />
+  </wsdl:message>
+  <wsdl:service name="EventoService">
+    <wsdl:port name="EventoService" binding="tns:EventoService">
+      <wsdlsoap11:address location="http://127.0.0.1:8000/" />
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:portType name="EventoService">
+    <wsdl:operation name="CriarEvento" parameterOrder="CriarEvento">
+      <wsdl:documentation>Cria um novo evento e retorna o objeto criado com seu ID.</wsdl:documentation>
+      <wsdl:input name="CriarEvento" message="tns:CriarEvento" />
+      <wsdl:output name="CriarEventoResponse" message="tns:CriarEventoResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarEventos" parameterOrder="ListarEventos">
+      <wsdl:documentation>Retorna uma lista com todos os eventos cadastrados.</wsdl:documentation>
+      <wsdl:input name="ListarEventos" message="tns:ListarEventos" />
+      <wsdl:output name="ListarEventosResponse" message="tns:ListarEventosResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="AtualizarEvento" parameterOrder="AtualizarEvento">
+      <wsdl:documentation>Atualiza os dados de um evento existente pelo ID.</wsdl:documentation>
+      <wsdl:input name="AtualizarEvento" message="tns:AtualizarEvento" />
+      <wsdl:output name="AtualizarEventoResponse" message="tns:AtualizarEventoResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletarEvento" parameterOrder="DeletarEvento">
+      <wsdl:documentation>Remove um evento pelo ID. Retorna True se removido, False se não
+        encontrado.</wsdl:documentation>
+      <wsdl:input name="DeletarEvento" message="tns:DeletarEvento" />
+      <wsdl:output name="DeletarEventoResponse" message="tns:DeletarEventoResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="EventoService" type="tns:EventoService">
+    <wsdlsoap11:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CriarEvento">
+      <wsdlsoap11:operation soapAction="CriarEvento" style="document" />
+      <wsdl:input name="CriarEvento">
+        <wsdlsoap11:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CriarEventoResponse">
+        <wsdlsoap11:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarEventos">
+      <wsdlsoap11:operation soapAction="ListarEventos" style="document" />
+      <wsdl:input name="ListarEventos">
+        <wsdlsoap11:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="ListarEventosResponse">
+        <wsdlsoap11:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AtualizarEvento">
+      <wsdlsoap11:operation soapAction="AtualizarEvento" style="document" />
+      <wsdl:input name="AtualizarEvento">
+        <wsdlsoap11:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="AtualizarEventoResponse">
+        <wsdlsoap11:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletarEvento">
+      <wsdlsoap11:operation soapAction="DeletarEvento" style="document" />
+      <wsdl:input name="DeletarEvento">
+        <wsdlsoap11:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="DeletarEventoResponse">
+        <wsdlsoap11:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>
