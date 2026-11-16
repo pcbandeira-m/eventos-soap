@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>br.com.estudo</groupId>
+    <artifactId>cliente</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jakarta.ws.version>4.0.3</jakarta.ws.version>
+    </properties>
+
+    <!-- Plugin responsável por ler arquivos WSDL e gerar código Java automaticamente -->
+    <dependencies>
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
+            <version>${jakarta.ws.version}</version>
+        </dependency>
+    </dependencies>
+
+    <!-- Define QUANDO e O QUE o plugin deve executar durante o ciclo de vida do Maven -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>${jakarta.ws.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- Executa a ferramenta 'wsimport' automaticamente antes da compilação (fase generate-sources) -->
+                            <goal>wsimport</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!-- Parâmetros de entrada para o 'wsimport' saber onde buscar o contrato e onde salvar as classes -->
+                <configuration>
+                    <!-- Recomenda-se salvar o .wsdl localmente em src/main/resources/wsdl -->
+                    <wsdlDirectory>${project.basedir}/src/main/resources/wsdl</wsdlDirectory>
+                    <wsdlFiles>
+                        <wsdlFile>eventos.wsdl</wsdlFile>
+                    </wsdlFiles>
+                    <!-- Nome do pacote Java onde as classes geradas (interfaces, serviços e DTOs) serão criadas dentro de target/generated-sources/wsimport -->
+                    <packageName>br.com.estudo.soap.client</packageName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
