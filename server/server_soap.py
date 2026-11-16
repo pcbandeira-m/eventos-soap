@@ -1,5 +1,4 @@
-from xmlrpc.client import Fault
-from spyne import Application, rpc, ServiceBase, Integer, Unicode, Boolean, Array, ComplexModel
+from spyne import Application, rpc, ServiceBase, Integer, Unicode, Boolean, Array, ComplexModel, Fault
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
 from wsgiref.simple_server import make_server
