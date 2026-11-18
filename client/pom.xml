@@ -15,7 +15,8 @@
         <jakarta.ws.version>4.0.3</jakarta.ws.version>
     </properties>
 
-    <!-- Plugin responsável por ler arquivos WSDL e gerar código Java automaticamente -->
+    <!-- Em tempo de execução -->
+    <!-- Converte chamadas Java em SOAP e processa respostas XML -->
     <dependencies>
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
@@ -24,7 +25,9 @@
         </dependency>
     </dependencies>
 
+    <!-- Em tempo de compilação -->
     <!-- Define QUANDO e O QUE o plugin deve executar durante o ciclo de vida do Maven -->
+    <!-- Executa o wsimport para gerar classes a partir do WSDL -->
     <build>
         <plugins>
             <plugin>

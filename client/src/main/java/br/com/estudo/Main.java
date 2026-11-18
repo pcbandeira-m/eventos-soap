@@ -1,20 +1,25 @@
 package br.com.estudo;
 
+// Classes geradas pelo wsimport, que implementa a interface do serviço SOAP
 import br.com.estudo.soap.client.Evento;
 import br.com.estudo.soap.client.EventoService;
 import br.com.estudo.soap.client.EventoService_Service;
+import jakarta.xml.bind.JAXBElement;
 
 import javax.xml.namespace.QName;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.List;
 import java.util.Scanner;
 
+// Nota a um tipo de dado do XML Schema (XSD)
+//  xs:integer -> java.math.BigInteger
+
 public class Main {
     private static final String WSDL_URL = "http://127.0.0.1:8000/?wsdl";
-    private static final QName SERVICE_NAME =
-            new QName("http://eventos.soap.exemplo/wsdl", "EventoService");
+    // QName significa Qualified Name, ou nome qualificado em XML. Ele identifica um elemento ou serviço XML de forma única
+    private static final QName SERVICE_NAME = new QName("http://eventos.soap.exemplo/wsdl", "EventoService");
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -43,7 +48,9 @@ public class Main {
 
     private static EventoService createService() {
         try {
-            return new EventoService_Service(new URL(WSDL_URL), SERVICE_NAME).getEventoService();
+            // Cria uma instância do serviço de eventos usando a URL do WSDL e o nome do serviço
+            // O método getEventoService() retorna a porta do serviço, que é usada para fazer chamadas ao serviço SOAP
+            return new EventoService_Service((URI.create(WSDL_URL).toURL()), SERVICE_NAME).getEventoService();
         } catch (MalformedURLException exception) {
             throw new IllegalStateException("URL do WSDL inválida: " + WSDL_URL, exception);
         }
@@ -67,16 +74,23 @@ public class Main {
                 readText(scanner, "Categoria: "),
                 BigInteger.valueOf(readInteger(scanner, "Quantidade de convidados: ")));
         System.out.println("Evento criado:");
-        print(evento);
+        printEvento(evento);
     }
 
     private static void list(EventoService service) {
+        /*
+        service.listarEventos()
+        Chama a operação SOAP ListarEventos no servidor. Ela retorna um objeto EventoArray, não uma lista diretamente.
+
+        .getEvento()
+        Obtém a lista armazenada dentro de EventoArray.
+        */
         List<Evento> eventos = service.listarEventos().getEvento();
         if (eventos.isEmpty()) {
             System.out.println("Nenhum evento cadastrado.");
             return;
         }
-        eventos.forEach(Main::print);
+        eventos.forEach(Main::printEvento);
     }
 
     private static void update(Scanner scanner, EventoService service) {
@@ -92,7 +106,7 @@ public class Main {
             System.out.println("Evento não encontrado.");
         } else {
             System.out.println("Evento atualizado:");
-            print(evento);
+            printEvento(evento);
         }
     }
 
@@ -105,8 +119,8 @@ public class Main {
         }
     }
 
-    private static String readText(Scanner scanner, String prompt) {
-        System.out.print(prompt);
+    private static String readText(Scanner scanner, String message) {
+        System.out.print(message);
         String value = scanner.nextLine().trim();
         if (value.isEmpty()) {
             throw new IllegalArgumentException("O valor não pode ser vazio.");
@@ -114,9 +128,9 @@ public class Main {
         return value;
     }
 
-    private static int readInteger(Scanner scanner, String prompt) {
+    private static int readInteger(Scanner scanner, String message) {
         while (true) {
-            System.out.print(prompt);
+            System.out.print(message);
             try {
                 return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException exception) {
@@ -125,13 +139,20 @@ public class Main {
         }
     }
 
-    private static void print(Evento evento) {
+    private static void printEvento(Evento evento) {
         System.out.printf("ID: %s | Título: %s | Data: %s | Local: %s | Categoria: %s | Convidados: %s%n",
                 value(evento.getId()), value(evento.getTitulo()), value(evento.getData()),
                 value(evento.getLocal()), value(evento.getCategoria()), value(evento.getQtdConvidados()));
     }
 
-    private static <T> T value(jakarta.xml.bind.JAXBElement<T> element) {
+    /*
+    O WSDL possui campos potencialmente nulos:
+    <xs:element name="titulo" type="xs:string" minOccurs="0" nillable="true"/>
+    Por isso os valores gerados não são String ou BigInteger diretamente, mas JAXBElement<String> e JAXBElement<BigInteger>.
+
+    Essa função extrai o conteúdo
+    */
+    private static <T> T value(JAXBElement<T> element) {
         return element == null ? null : element.getValue();
     }
 }
