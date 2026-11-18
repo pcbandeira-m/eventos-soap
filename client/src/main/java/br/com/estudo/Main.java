@@ -5,6 +5,7 @@ import br.com.estudo.soap.client.Evento;
 import br.com.estudo.soap.client.EventoService;
 import br.com.estudo.soap.client.EventoService_Service;
 import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.ws.BindingProvider;
 
 import javax.xml.namespace.QName;
 import java.math.BigInteger;
@@ -17,7 +18,7 @@ import java.util.Scanner;
 //  xs:integer -> java.math.BigInteger
 
 public class Main {
-    private static final String WSDL_URL = "http://127.0.0.1:8000/?wsdl";
+    private static final String WSDL_URL = System.getenv().getOrDefault("WSDL_URL", "http://127.0.0.1:8000/?wsdl");
     // QName significa Qualified Name, ou nome qualificado em XML. Ele identifica um elemento ou serviço XML de forma única
     private static final QName SERVICE_NAME = new QName("http://eventos.soap.exemplo/wsdl", "EventoService");
 
@@ -50,7 +51,10 @@ public class Main {
         try {
             // Cria uma instância do serviço de eventos usando a URL do WSDL e o nome do serviço
             // O método getEventoService() retorna a porta do serviço, que é usada para fazer chamadas ao serviço SOAP
-            return new EventoService_Service((URI.create(WSDL_URL).toURL()), SERVICE_NAME).getEventoService();
+            EventoService port = new EventoService_Service(URI.create(WSDL_URL).toURL(), SERVICE_NAME).getEventoService();
+            ((BindingProvider) port).getRequestContext()
+                    .put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, WSDL_URL.replace("?wsdl", ""));
+            return port;
         } catch (MalformedURLException exception) {
             throw new IllegalStateException("URL do WSDL inválida: " + WSDL_URL, exception);
         }

@@ -1,0 +1,16 @@
+services:
+  server:
+    build: ./server
+    ports:
+      - "8000:8000"
+    environment:
+      SOAP_HOST: "0.0.0.0"
+
+  client:
+    build: ./client
+    depends_on:
+      - server
+    environment:
+      WSDL_URL: "http://server:8000/?wsdl"
+    stdin_open: true
+    tty: true

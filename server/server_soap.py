@@ -1,3 +1,4 @@
+import os
 from spyne import Application, rpc, ServiceBase, Integer, Unicode, Boolean, Array, ComplexModel, Fault
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
@@ -96,7 +97,7 @@ wsgi_application = WsgiApplication(application)
 
 # 5. Inicialização do servidor HTTP local
 if __name__ == "__main__":
-    host = "127.0.0.1"
+    host = os.getenv("SOAP_HOST", "127.0.0.1")
     port = 8000
 
     # Cria o servidor HTTP nativo do Python apontando para a aplicação SOAP
