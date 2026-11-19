@@ -45,8 +45,19 @@ Docker, ou:
 
 **Opção 1: Com Docker Compose (recomendado)**
 
+
 ```bash
-docker-compose up --build
+# Subir o servidor
+docker compose up -d --build server
+
+# Executar o cliente interativo
+docker compose run --rm client
+
+# Ver as últimas 50 linhas em tempo real
+docker compose logs -f --tail=50 server
+
+# Encerrar
+docker compose down
 ```
 
 O servidor estará em `http://localhost:8000` e o cliente rodará interativamente.
@@ -65,12 +76,6 @@ Terminal 2 - Cliente:
 cd client
 mvn clean package
 java -cp "target/client-1.0-SNAPSHOT.jar:target/lib/*" br.com.estudo.Main
-```
-
-### Encerrar
-
-```bash
-docker-compose down
 ```
 
 ## APIs SOAP
